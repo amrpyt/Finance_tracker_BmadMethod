@@ -54,20 +54,26 @@ export const validateAccountType = (type: string): type is AccountType => {
   return ACCOUNT_TYPES.includes(type as AccountType);
 };
 
-export const validateCreateAccountRequest = (data: any): data is CreateAccountRequest => {
+export const validateCreateAccountRequest = (data: unknown): data is CreateAccountRequest => {
+  if (!data || typeof data !== 'object') return false;
+  
+  const obj = data as Record<string, unknown>;
+  
   return (
-    data &&
-    typeof data.name === 'string' &&
-    validateAccountName(data.name) &&
-    typeof data.type === 'string' &&
-    validateAccountType(data.type)
+    typeof obj.name === 'string' &&
+    validateAccountName(obj.name) &&
+    typeof obj.type === 'string' &&
+    validateAccountType(obj.type)
   );
 };
 
-export const validateUpdateAccountRequest = (data: any): data is UpdateAccountRequest => {
+export const validateUpdateAccountRequest = (data: unknown): data is UpdateAccountRequest => {
+  if (!data || typeof data !== 'object') return false;
+  
+  const obj = data as Record<string, unknown>;
+  
   return (
-    data &&
-    typeof data.name === 'string' &&
-    validateAccountName(data.name)
+    typeof obj.name === 'string' &&
+    validateAccountName(obj.name)
   );
 };

@@ -1,6 +1,15 @@
 import { supabase } from './database';
 import { Account, CreateAccountRequest, UpdateAccountRequest, DeleteAccountResponse } from '@/types/account';
 
+// Database row type for accounts
+interface AccountRow {
+  id: string;
+  user_id: string;
+  name: string;
+  type: 'bank' | 'cash' | 'wallet' | 'credit_card';
+  created_at: string;
+}
+
 export class AccountService {
   /**
    * Create a new account for the authenticated user
@@ -115,7 +124,7 @@ export class AccountService {
 
       // Calculate balance for each account from transactions
       const accountsWithBalances = await Promise.all(
-        accounts.map(async (account: any) => {
+        accounts.map(async (account: AccountRow) => {
           const balance = await this.calculateAccountBalance(account.id);
           return {
             ...account,
@@ -236,7 +245,7 @@ export class AccountService {
     }
 
     // Calculate balance: income adds, expense subtracts
-    const balance = data.reduce((total: number, transaction: any) => {
+    const balance = data.reduce((total: number, transaction: { amount: number; type: 'income' | 'expense' }) => {
       if (transaction.type === 'income') {
         return total + transaction.amount;
       } else {

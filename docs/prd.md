@@ -38,6 +38,9 @@ The **AI Personal Finance Tracker** is a SaaS WebApp that helps users monitor th
 * **Dashboard Cards**: The dashboard will use a card-based layout to display the balance for each account, plus a total balance card.
 * **Visual Modes**: Both Light and Dark modes will be supported.
 
+### User Experience Flows
+Detailed user journey flows, including AI processing scenarios, error recovery paths, and multi-modal input handling are documented in: **[User Journey Flows](./user-journey-flows.md)**
+
 ## 4. Epic & Story Structure
 
 ### ## Epic List

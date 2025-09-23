@@ -9,12 +9,14 @@ interface AccountCardProps {
   account: Account;
   onAccountUpdated?: (updatedAccount: Account) => void;
   onAccountDeleted?: (deletedAccountId: string) => void;
+  onAddTransaction?: (accountId: string) => void;
 }
 
 export default function AccountCard({ 
   account, 
   onAccountUpdated, 
-  onAccountDeleted 
+  onAccountDeleted,
+  onAddTransaction
 }: AccountCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(account.name);
@@ -271,16 +273,24 @@ export default function AccountCard({
             {isLoading ? (
               <>
                 <Skeleton className="h-9 flex-1" />
-                <Skeleton className="h-9 w-16" />
+                <Skeleton className="h-9 w-12" />
+                <Skeleton className="h-9 w-12" />
                 <Skeleton className="h-9 w-16" />
               </>
             ) : (
               <>
                 <button
-                  onClick={() => {/* Future: View Transactions */}}
-                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded-md text-sm font-medium transition-colors"
+                  onClick={() => onAddTransaction?.(account.id)}
+                  disabled={isLoading}
+                  className="flex-1 bg-green-50 hover:bg-green-100 disabled:bg-green-25 text-green-700 py-2 px-3 rounded-md text-sm font-medium transition-colors"
                 >
-                  View Transactions
+                  + Transaction
+                </button>
+                <button
+                  onClick={() => {/* Future: View Transactions */}}
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded-md text-sm font-medium transition-colors"
+                >
+                  View
                 </button>
                 <button
                   onClick={handleEditStart}
