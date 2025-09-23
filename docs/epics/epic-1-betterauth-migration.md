@@ -36,19 +36,19 @@ Replace the custom authentication system with BetterAuth (open-source library) t
 
 ## Stories
 
-1. **Story 1:** Setup BetterAuth Infrastructure and Database Migration
+1. **Story 1.6:** Setup BetterAuth Infrastructure and Database Migration
    - Install and configure BetterAuth with Supabase adapter
    - Create database migration scripts to extend user table with BetterAuth fields
    - Set up BetterAuth server configuration with existing database connection
    - Configure environment variables and secrets
 
-2. **Story 2:** Replace Backend Authentication System
+2. **Story 1.7:** Replace Backend Authentication System
    - Replace custom JWT auth routes with BetterAuth handler
    - Migrate password hashing from bcryptjs to BetterAuth's scrypt implementation
    - Update session management to use BetterAuth's secure session handling
    - Implement user data migration script for existing password hashes
 
-3. **Story 3:** Update Frontend Authentication Integration
+3. **Story 1.8:** Update Frontend Authentication Integration
    - Replace custom auth state management with BetterAuth React client
    - Update authentication forms to use BetterAuth's client methods
    - Implement session management using BetterAuth's useSession hook

@@ -62,6 +62,12 @@ export default function Home() {
             >
               🔐 Auth Status
             </a>
+            <a
+              href="/accounts"
+              className="px-3 py-1 bg-emerald-600 text-white rounded text-sm hover:bg-emerald-700 transition-colors"
+            >
+              💰 Accounts
+            </a>
           </div>
         </div>
 

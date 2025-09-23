@@ -1,0 +1,28 @@
+schema: 1
+story: '2.1'
+gate: CONCERNS
+status_reason: 'Demo mode fallback and authentication bypass present concerns for production readiness.'
+reviewer: 'Quinn'
+updated: '2025-09-23T00:56:26Z'
+top_issues:
+  - id: 'SEC-001'
+    severity: high
+    finding: 'Demo mode allows authentication bypass with hardcoded demo-user-123'
+    suggested_action: 'Remove demo mode fallback before production deployment'
+  - id: 'REL-001'
+    severity: medium
+    finding: 'Mock data fallback in AccountService could mask database connectivity issues'
+    suggested_action: 'Add proper database health checks and error handling'
+  - id: 'TEST-001'
+    severity: medium
+    finding: 'No integration tests for API endpoints, only unit tests with mocks'
+    suggested_action: 'Add integration tests for /api/accounts endpoints'
+  - id: 'PERF-001'
+    severity: low
+    finding: 'Balance calculation queries individual transactions per account'
+    suggested_action: 'Consider optimizing with aggregated queries for multiple accounts'
+  - id: 'SEC-002'
+    severity: medium
+    finding: 'No rate limiting on account creation API endpoint'
+    suggested_action: 'Add rate limiting middleware to prevent abuse'
+waiver: { active: false }
