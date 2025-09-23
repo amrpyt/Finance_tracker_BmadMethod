@@ -1,0 +1,49 @@
+# Global owners - These users will be requested for review when someone opens a pull request
+* @amrpyt
+
+# Documentation files
+/docs/ @amrpyt
+/README.md @amrpyt
+/CONTRIBUTING.md @amrpyt
+/CHANGELOG.md @amrpyt
+/LICENSE @amrpyt
+/CODE_OF_CONDUCT.md @amrpyt
+/SECURITY.md @amrpyt
+
+# Core application files
+/finance-tracker/src/ @amrpyt
+/finance-tracker/package.json @amrpyt
+/finance-tracker/next.config.js @amrpyt
+/finance-tracker/tailwind.config.js @amrpyt
+/finance-tracker/tsconfig.json @amrpyt
+
+# GitHub configuration
+/.github/ @amrpyt
+/.github/workflows/ @amrpyt
+/.github/ISSUE_TEMPLATE/ @amrpyt
+
+# Security and deployment configuration
+/finance-tracker/vercel.json @amrpyt
+/.env.example @amrpyt
+/.gitignore @amrpyt
+
+# Architecture and planning documents
+/docs/architecture/ @amrpyt
+/docs/epics/ @amrpyt
+/docs/prd/ @amrpyt
+
+# Quality assurance
+/docs/qa/ @amrpyt
+
+# Story files - These require careful review
+/docs/stories/ @amrpyt
+
+# Testing files
+/finance-tracker/src/__tests__/ @amrpyt
+/finance-tracker/jest.config.js @amrpyt
+
+# Database and migrations
+/finance-tracker/scripts/ @amrpyt
+
+# Configuration files
+/finance-tracker/.eslintrc.json @amrpyt

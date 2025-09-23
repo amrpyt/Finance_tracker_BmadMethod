@@ -1,0 +1,137 @@
+# GitHub Labels Configuration
+# Run: gh label create --file .github/labels.yml
+
+# Priority Labels
+- name: "priority:critical"
+  description: "Critical issues requiring immediate attention"
+  color: "d73a49"
+
+- name: "priority:high"
+  description: "High priority items for next sprint"
+  color: "ff6b35"
+
+- name: "priority:medium"
+  description: "Medium priority items"
+  color: "fbca04"
+
+- name: "priority:low"
+  description: "Low priority items for future consideration"
+  color: "0e8a16"
+
+# Type Labels
+- name: "type:bug"
+  description: "Something isn't working"
+  color: "d73a49"
+
+- name: "type:enhancement"
+  description: "New feature or request"
+  color: "84b6eb"
+
+- name: "type:documentation"
+  description: "Improvements or additions to documentation"
+  color: "0052cc"
+
+- name: "type:testing"
+  description: "Related to testing"
+  color: "f9d0c4"
+
+- name: "type:maintenance"
+  description: "Maintenance and technical debt"
+  color: "fef2c0"
+
+- name: "type:performance"
+  description: "Performance improvements"
+  color: "c2e0c6"
+
+- name: "type:security"
+  description: "Security related issues"
+  color: "ee0701"
+
+# Epic Labels
+- name: "epic:foundation"
+  description: "Epic 1: Foundation & User Onboarding"
+  color: "5319e7"
+
+- name: "epic:financial"
+  description: "Epic 2: Core Financial Management"
+  color: "0052cc"
+
+- name: "epic:ai"
+  description: "Epic 3: AI-Powered Features"
+  color: "1d76db"
+
+- name: "epic:analytics"
+  description: "Epic 4: Analytics & Insights"
+  color: "0e8a16"
+
+# Status Labels
+- name: "status:pending"
+  description: "Waiting for review or action"
+  color: "fbca04"
+
+- name: "status:in-progress"
+  description: "Currently being worked on"
+  color: "0052cc"
+
+- name: "status:completed"
+  description: "Completed and verified"
+  color: "0e8a16"
+
+- name: "status:blocked"
+  description: "Blocked by dependencies"
+  color: "d73a49"
+
+- name: "status:review"
+  description: "In review process"
+  color: "f9d0c4"
+
+# Story Labels
+- name: "story:2.1"
+  description: "Story 2.1: Create and View Financial Accounts"
+  color: "c5def5"
+
+- name: "story:2.2"
+  description: "Story 2.2: Edit and Delete Financial Accounts"
+  color: "c5def5"
+
+# Component Labels
+- name: "component:frontend"
+  description: "React/Next.js frontend components"
+  color: "61dafb"
+
+- name: "component:backend"
+  description: "API routes and server logic"
+  color: "68217a"
+
+- name: "component:database"
+  description: "Database schema and operations"
+  color: "3fcf8e"
+
+- name: "component:auth"
+  description: "Authentication and authorization"
+  color: "ff6b35"
+
+- name: "component:testing"
+  description: "Test files and testing infrastructure"
+  color: "f9d0c4"
+
+# Size Labels
+- name: "size:xs"
+  description: "Extra small changes (< 10 lines)"
+  color: "c2e0c6"
+
+- name: "size:small"
+  description: "Small changes (10-50 lines)"
+  color: "7057ff"
+
+- name: "size:medium"
+  description: "Medium changes (50-200 lines)"
+  color: "fbca04"
+
+- name: "size:large"
+  description: "Large changes (200+ lines)"
+  color: "ff6b35"
+
+- name: "size:xl"
+  description: "Extra large changes (500+ lines)"
+  color: "d73a49"
