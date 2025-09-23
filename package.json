@@ -5,5 +5,9 @@
     "@testing-library/user-event": "^14.6.1",
     "jest": "^30.1.3",
     "jest-environment-jsdom": "^30.1.2"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.1"
   }
 }

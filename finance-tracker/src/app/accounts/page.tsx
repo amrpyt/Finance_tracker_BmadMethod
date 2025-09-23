@@ -6,6 +6,7 @@ import { AccountService } from '@/lib/accounts';
 import { useAuth } from '@/contexts/auth-context';
 import AddAccountForm from '@/components/accounts/AddAccountForm';
 import AccountCard from '@/components/accounts/AccountCard';
+import AccountsLoadingSkeleton from '@/components/accounts/AccountsLoadingSkeleton';
 
 export default function AccountsPage() {
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -47,6 +48,20 @@ export default function AccountsPage() {
   const handleAccountAdded = (newAccount: Account) => {
     setAccounts(prev => [...prev, newAccount]);
     setShowAddForm(false);
+  };
+
+  const handleAccountUpdated = (updatedAccount: Account) => {
+    setAccounts(prev => 
+      prev.map(account => 
+        account.id === updatedAccount.id ? updatedAccount : account
+      )
+    );
+  };
+
+  const handleAccountDeleted = (deletedAccountId: string) => {
+    setAccounts(prev => 
+      prev.filter(account => account.id !== deletedAccountId)
+    );
   };
 
   // For demo purposes, show accounts even without auth during development
@@ -106,12 +121,7 @@ export default function AccountsPage() {
         )}
 
         {/* Loading State */}
-        {loading && (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-gray-600">Loading accounts...</p>
-          </div>
-        )}
+        {loading && <AccountsLoadingSkeleton count={6} />}
 
         {/* Error State */}
         {error && (
@@ -165,7 +175,12 @@ export default function AccountsPage() {
               /* Accounts Grid */
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {accounts.map((account) => (
-                  <AccountCard key={account.id} account={account} />
+                  <AccountCard 
+                    key={account.id} 
+                    account={account}
+                    onAccountUpdated={handleAccountUpdated}
+                    onAccountDeleted={handleAccountDeleted}
+                  />
                 ))}
               </div>
             )}

@@ -1,13 +1,26 @@
 'use client';
 
-import { Account, AccountType } from '@/types/account';
+import { useState } from 'react';
+import { Account, AccountType, validateAccountName } from '@/types/account';
 import { AccountService } from '@/lib/accounts';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface AccountCardProps {
   account: Account;
+  onAccountUpdated?: (updatedAccount: Account) => void;
+  onAccountDeleted?: (deletedAccountId: string) => void;
 }
 
-export default function AccountCard({ account }: AccountCardProps) {
+export default function AccountCard({ 
+  account, 
+  onAccountUpdated, 
+  onAccountDeleted 
+}: AccountCardProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState(account.name);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -87,6 +100,95 @@ export default function AccountCard({ account }: AccountCardProps) {
     return 'text-gray-600';
   };
 
+  const handleEditStart = () => {
+    setIsEditing(true);
+    setEditName(account.name);
+    setError(null);
+  };
+
+  const handleEditCancel = () => {
+    setIsEditing(false);
+    setEditName(account.name);
+    setError(null);
+  };
+
+  const handleEditSave = async () => {
+    // Validate name
+    if (!validateAccountName(editName)) {
+      setError('Account name must be 2-50 characters long');
+      return;
+    }
+
+    if (editName.trim() === account.name) {
+      setIsEditing(false);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/accounts/${account.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: editName.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update account');
+      }
+
+      const updatedAccount = await response.json();
+      
+      // Update parent component
+      if (onAccountUpdated) {
+        onAccountUpdated(updatedAccount);
+      }
+      
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating account:', error);
+      setError(error instanceof Error ? error.message : 'Failed to update account');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/accounts/${account.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete account');
+      }
+
+      const deleteResult = await response.json();
+      
+      // Notify parent component
+      if (onAccountDeleted) {
+        onAccountDeleted(account.id);
+      }
+      
+      setShowDeleteConfirm(false);
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      setError(error instanceof Error ? error.message : 'Failed to delete account');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
       {/* Account Header */}
@@ -95,9 +197,27 @@ export default function AccountCard({ account }: AccountCardProps) {
           <div className={`p-2 rounded-lg ${getAccountTypeColor(account.type)}`}>
             {getAccountTypeIcon(account.type)}
           </div>
-          <div>
-            <h3 className="font-semibold text-gray-900 text-lg">{account.name}</h3>
-            <p className="text-sm text-gray-500">{getAccountTypeName(account.type)}</p>
+          <div className="flex-1">
+            {isEditing ? (
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full px-3 py-1 border border-gray-300 rounded-md text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  autoFocus
+                  disabled={isLoading}
+                />
+                {error && (
+                  <p className="text-sm text-red-600">{error}</p>
+                )}
+              </div>
+            ) : (
+              <>
+                <h3 className="font-semibold text-gray-900 text-lg">{account.name}</h3>
+                <p className="text-sm text-gray-500">{getAccountTypeName(account.type)}</p>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -118,15 +238,132 @@ export default function AccountCard({ account }: AccountCardProps) {
         </div>
       </div>
 
-      {/* Action Buttons (for future features) */}
-      <div className="mt-4 flex gap-2">
-        <button className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded-md text-sm font-medium transition-colors">
-          View Transactions
-        </button>
-        <button className="bg-blue-50 hover:bg-blue-100 text-blue-700 py-2 px-3 rounded-md text-sm font-medium transition-colors">
-          Edit
-        </button>
+      {/* Action Buttons */}
+      <div className="mt-4">
+        {isEditing ? (
+          <div className="flex gap-2">
+            {isLoading ? (
+              <>
+                <Skeleton className="h-9 flex-1" />
+                <Skeleton className="h-9 w-16" />
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={handleEditSave}
+                  disabled={isLoading}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-2 px-3 rounded-md text-sm font-medium transition-colors"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={handleEditCancel}
+                  disabled={isLoading}
+                  className="bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 text-gray-700 py-2 px-3 rounded-md text-sm font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+              </>
+            )}
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            {isLoading ? (
+              <>
+                <Skeleton className="h-9 flex-1" />
+                <Skeleton className="h-9 w-16" />
+                <Skeleton className="h-9 w-16" />
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => {/* Future: View Transactions */}}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded-md text-sm font-medium transition-colors"
+                >
+                  View Transactions
+                </button>
+                <button
+                  onClick={handleEditStart}
+                  disabled={isLoading}
+                  className="bg-blue-50 hover:bg-blue-100 disabled:bg-blue-25 text-blue-700 py-2 px-3 rounded-md text-sm font-medium transition-colors"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  disabled={isLoading}
+                  className="bg-red-50 hover:bg-red-100 disabled:bg-red-25 text-red-700 py-2 px-3 rounded-md text-sm font-medium transition-colors"
+                >
+                  Delete
+                </button>
+              </>
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-red-100 rounded-full">
+                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Delete Account</h3>
+                <p className="text-sm text-gray-500">This action cannot be undone</p>
+              </div>
+            </div>
+            
+            <div className="mb-6">
+              <p className="text-gray-700 mb-2">
+                Are you sure you want to delete "<strong>{account.name}</strong>"?
+              </p>
+              <p className="text-sm text-red-600">
+                This will also permanently delete all transactions associated with this account.
+              </p>
+            </div>
+
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            )}
+            
+            <div className="flex gap-3">
+              {isLoading ? (
+                <>
+                  <Skeleton className="h-10 flex-1" />
+                  <Skeleton className="h-10 flex-1" />
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={handleDelete}
+                    disabled={isLoading}
+                    className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white py-2 px-4 rounded-md font-medium transition-colors"
+                  >
+                    Yes, Delete Account
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowDeleteConfirm(false);
+                      setError(null);
+                    }}
+                    disabled={isLoading}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 text-gray-700 py-2 px-4 rounded-md font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

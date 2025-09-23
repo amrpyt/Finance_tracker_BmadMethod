@@ -26,6 +26,23 @@ export interface GetAccountsResponse {
   accounts: Account[];
 }
 
+export interface UpdateAccountRequest {
+  name: string;
+}
+
+export interface UpdateAccountResponse {
+  id: string;
+  name: string;
+  type: AccountType;
+  balance: number;
+  created_at: string;
+}
+
+export interface DeleteAccountResponse {
+  deletedAccountId: string;
+  deletedTransactionCount: number;
+}
+
 // Validation schemas
 export const ACCOUNT_TYPES: AccountType[] = ['bank', 'cash', 'wallet', 'credit_card'];
 
@@ -44,5 +61,13 @@ export const validateCreateAccountRequest = (data: any): data is CreateAccountRe
     validateAccountName(data.name) &&
     typeof data.type === 'string' &&
     validateAccountType(data.type)
+  );
+};
+
+export const validateUpdateAccountRequest = (data: any): data is UpdateAccountRequest => {
+  return (
+    data &&
+    typeof data.name === 'string' &&
+    validateAccountName(data.name)
   );
 };

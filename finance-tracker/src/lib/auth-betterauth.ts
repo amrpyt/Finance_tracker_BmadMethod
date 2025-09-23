@@ -1,14 +1,18 @@
 import { betterAuth } from "better-auth";
+import { nextCookies } from "better-auth/next-js";
 import { Pool } from "pg";
 
 // Production BetterAuth configuration for CLI
-const database = new Pool({
+const database = process.env.DATABASE_URL ? new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-});
+}) : undefined;
 
 export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+  secret: process.env.BETTER_AUTH_SECRET || "dev-secret-key-not-for-production",
   database,
+  trustedOrigins: ["http://localhost:3000", "http://127.0.0.1:3000"],
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false, // Start with false for easier migration
@@ -39,4 +43,7 @@ export const auth = betterAuth({
       ipAddressHeaders: ['x-forwarded-for', 'x-real-ip'],
     },
   },
+  plugins: [
+    nextCookies() // Add Next.js cookies plugin - must be last
+  ]
 });
