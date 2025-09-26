@@ -1,0 +1,9 @@
+schema: 1
+story: '4.1'
+gate: PASS
+status_reason: 'Balances display feature meets acceptance criteria with comprehensive automated coverage.'
+reviewer: 'Quinn'
+updated: '2025-09-25T22:32:18Z'
+top_issues: []
+waiver:
+  active: false

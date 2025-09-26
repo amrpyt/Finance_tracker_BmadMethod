@@ -1,4 +1,5 @@
 import { supabase } from './database';
+import { formatCurrency as formatDashboardCurrency } from '@/lib/dashboard';
 import { Account, CreateAccountRequest, UpdateAccountRequest, DeleteAccountResponse } from '@/types/account';
 
 // Database row type for accounts
@@ -259,12 +260,16 @@ export class AccountService {
   /**
    * Format currency for display
    */
-  static formatCurrency(amount: number, currency: string = 'EGP'): string {
-    return new Intl.NumberFormat('en-EG', {
-      style: 'currency',
-      currency: currency,
+  static formatCurrency(
+    amount: number,
+    currency: string = 'EGP',
+    locale: string = 'en-EG'
+  ): string {
+    return formatDashboardCurrency(amount, {
+      currency,
+      locale,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    }).format(amount);
+    });
   }
 }

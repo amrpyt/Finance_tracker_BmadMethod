@@ -1,5 +1,6 @@
 import { supabase } from './database';
 import { AccountService } from './accounts';
+import { formatCurrency as formatDashboardCurrency } from '@/lib/dashboard';
 import { 
   Transaction, 
   CreateTransactionRequest, 
@@ -343,13 +344,17 @@ export class TransactionService {
   /**
    * Format currency for display
    */
-  static formatCurrency(amount: number, currency: string = 'EGP'): string {
-    return new Intl.NumberFormat('en-EG', {
-      style: 'currency',
-      currency: currency,
+  static formatCurrency(
+    amount: number,
+    currency: string = 'EGP',
+    locale: string = 'en-EG'
+  ): string {
+    return formatDashboardCurrency(amount, {
+      currency,
+      locale,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    }).format(amount);
+    });
   }
 
   /**
